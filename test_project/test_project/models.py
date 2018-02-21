@@ -191,3 +191,8 @@ class RenamedThings(Base):
     __pyramid_jsonapi__ = {
         'collection_name': 'whatsits'
     }
+
+class PermissionClass(Base):
+    __tablename__ = 'permission_class'
+    id = IdColumn()
+    stuff = Column(Text)

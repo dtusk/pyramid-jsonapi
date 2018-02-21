@@ -50,6 +50,10 @@ def person_allowed_fields(self):
         return set(self.fields)
 
 
+def authenticate_access(self, request):
+    if request.headers.get('API_KEY') != 'foobar':
+        raise HTTPForbidden()
+
 def person_allowed_object(self, obj):
     if self.request.method == 'GET':
         try:
@@ -99,6 +103,7 @@ def main(global_config, **settings):
     person_view = pj.view_classes[
         models.Person
     ]
+
     person_view.callbacks['after_serialise_object'].appendleft(
         person_callback_add_information
     )
@@ -107,6 +112,16 @@ def main(global_config, **settings):
     pj.append_callback_set_to_all_views(
         'access_control_serialised_objects'
     )
+
+    permission_class_view = pj.view_classes[
+        models.PermissionClass
+    ]
+
+    permission_class_view.callbacks['request_headers'].appendleft(
+        authenticate_access
+    )
+
+
 
     # Back to the usual pyramid stuff.
     return config.make_wsgi_app()

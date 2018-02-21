@@ -284,6 +284,7 @@ class PyramidJSONAPI():
         # All callbacks have the current view as the first argument. The comments
         # below detail subsequent args.
         class_attrs['callbacks'] = {
+            'request_headers': deque(),             # args: headers(dict)
             'after_serialise_identifier': deque(),  # args: identifier(dict)
             'after_serialise_object': deque(),      # args: object(dict)
             'after_get': deque(),                   # args: document(dict)

@@ -98,6 +98,8 @@ class CollectionViewBase:
                     ep_dict['endpoints'][endpoint]['http_methods'][method]['responses'].keys()
                 )
                 try:
+                    for callback in self.callbacks['request_headers']:
+                        callback(self, self.request)
                     result = func(self)  # pylint: disable=not-callable
                     response_class = status_map[self.request.response.status_code]
                     if response_class not in responses:
@@ -161,6 +163,9 @@ class CollectionViewBase:
                     'parameters in Accepts header ' +
                     '(http://jsonapi.org/format).'
                 )
+
+
+
 
         def check_request_valid_json(request):
             """Check that the body of any request is valid JSON.
@@ -297,6 +302,7 @@ class CollectionViewBase:
 
                 http GET http://localhost:6543/people/1
         """
+
         for callback in self.callbacks['after_get']:
             self.item = callback(self, self.item)
         return self.item
